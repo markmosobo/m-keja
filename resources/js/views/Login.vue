@@ -130,48 +130,66 @@ export default {
       this.isPasswordVisible = !this.isPasswordVisible
     },
     async login_user() {
-      this.errors = {}
+    this.errors = {}
 
-      if (!this.form.email) {
+    if (!this.form.email) {
         this.errors.email = 'Email is required.'
         return
-      }
-      if (!this.form.password) {
+    }
+    if (!this.form.password) {
         this.errors.password = 'Password is required.'
         return
-      }
+    }
 
-      this.loading = true
+    this.loading = true
 
-      try {
+    try {
         const response = await axios.post('/api/login', this.form)
-
         this.loading = false
         this.form.email = ''
         this.form.password = ''
 
-        if (response.data.status === 'error') {
-          Swal.fire({
-            title: 'Oops',
+        if (response.status === 200 && response.data.token) {
+        // ✅ Save both user info and token
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+
+        // Optionally set the token for all future axios calls
+        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
+
+        // Update UI state
+        const loggedInUser = response.data.user
+        this.current_user = `${loggedInUser.first_name || ''} ${loggedInUser.last_name || ''}`
+        this.current_user_id = loggedInUser.id
+
+        // Success alert (optional)
+        Swal.fire({
+            title: 'Welcome!',
+            text: `Hello ${this.current_user}, you are now logged in.`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        })
+
+        // Redirect to dashboard
+        this.$router.push('/dashboard')
+        } else {
+        Swal.fire({
+            title: 'Oops!',
             text: response.data.message || 'Login failed. Please try again.',
             icon: 'warning'
-          })
-        } else {
-          localStorage.setItem('user', JSON.stringify(response.data.user))
-          const loggedInUser = JSON.parse(localStorage.getItem('user'))
-          this.current_user = `${loggedInUser.first_name} ${loggedInUser.last_name}`
-          this.current_user_id = loggedInUser.id
-          this.$router.push('/dashboard')
+        })
         }
-      } catch (error) {
+    } catch (error) {
         this.loading = false
         Swal.fire({
-          title: 'Error',
-          text: error.response?.data?.message || 'An error occurred during login. Please try again.',
-          icon: 'error'
+        title: 'Error',
+        text: error.response?.data?.error || 'An error occurred during login. Please try again.',
+        icon: 'error'
         })
-      }
     }
+    }
+
   }
 }
 </script>

@@ -37,10 +37,18 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'jwt',
+            'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Add this if missing 👇
+        'api' => [
+            'driver' => 'jwt', // <-- use 'jwt' if you're using tymon/jwt-auth
+            'provider' => 'users',
+            'hash' => false,
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -60,15 +68,15 @@ return [
     */
 
     'providers' => [
+        // 'users' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\User::class),
+        // ],
+
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
