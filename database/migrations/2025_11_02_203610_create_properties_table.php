@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->bigIncrements('id'); // Primary key
-            $table->unsignedBigInteger('landlord_id');       // FK → clients.id
-            $table->unsignedBigInteger('agent_id');       // FK → clients.id
+            $table->unsignedBigInteger('landlord_id');       // FK → users.id
+            $table->unsignedBigInteger('agent_id');       // FK → users.id
             $table->foreign('landlord_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign( 'agent_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('title', 20)->nullable(); // phones rarely exceed 20 chars
-            $table->longText('description')->nullable(); // phones rarely exceed 20 chars
+            $table->string('title', 20)->nullable(); //  rarely exceed 20 chars
+            $table->longText('description')->nullable(); //  rarely exceed 20 chars
             $table->enum('type', [
                 'apartment', 'house', 'bedsitter', 'studio', 'office', 'land'
             ])->default('pending');
-            $table->string('location', 20)->nullable(); // phones rarely exceed 20 chars
-            $table->string('coordinates', 20)->nullable(); // phones rarely exceed 20 chars
-            $table->decimal('rent_amount', 20)->nullable(); // phones rarely exceed 20 chars
+            $table->string('location', 20)->nullable(); //  rarely exceed 20 chars
+            $table->string('coordinates', 20)->nullable(); //  rarely exceed 20 chars
+            $table->integer('units_no', 20)->nullable(); //  rarely exceed 20 chars
             $table->enum('status', ['available', 'occupied', 'user'])->default('user'); // controlled roles            
             $table->timestamps();
         });

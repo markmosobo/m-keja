@@ -13,6 +13,7 @@ use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\DisputeController;
 use App\Http\Controllers\SystemConfigController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\ListController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -36,5 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('disputes', DisputeController::class);
     Route::apiResource('activity-logs', ActivityLogController::class);
     Route::apiResource('system-configs', SystemConfigController::class);
+    Route::get('lists', [ListController::class, 'index']);
+
 });
 
